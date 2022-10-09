@@ -58,4 +58,19 @@ class Vector:
     def get_angle_deg(self, v):
         rad = self.get_angle_rad(v)
         deg = rad * (180/math.pi)
-        return deg
+        return math.ceil(deg)
+    
+    def is_parallel(self, v):
+        try:
+            deg = self.get_angle_deg(v)
+            return deg == 0 or deg == 180 or deg == 360
+        except ZeroDivisionError:
+            return True
+    
+    def is_orthogonal(self, v):
+        try:
+            dot_product = self.dot_product(v)
+            deg = self.get_angle_deg(v)
+            return dot_product == 0 or deg == 90 or deg == 270
+        except ZeroDivisionError:
+            return True
