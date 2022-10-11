@@ -92,4 +92,13 @@ class Vector:
         orth = self - proj
         assert orth.is_orthogonal(v), "orth is not orthogonal to v"
         return orth
-        
+    
+    def cross_product(self, v):
+        assert len(self.coordinates) == 3, "Vector 1 should have 3 dimensions"
+        assert len(v.coordinates) == 3, "Vector 2 should have 3 dimensions"
+        cord1, cord2 = self.coordinates, v.coordinates
+        n0 = (cord1[1] * cord2[2]) - (cord1[2] * cord2[1])
+        n1 = -1 * ((cord1[0] * cord2[2]) - (cord1[2] * cord2[0]))
+        n2 = (cord1[0] * cord2[1]) - (cord1[1] * cord2[0])
+        new_vector = Vector([n0, n1, n2])
+        return new_vector
