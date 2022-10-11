@@ -17,7 +17,7 @@ class Vector:
 
 
     def __str__(self):
-        return 'Vector: {}'.format(self.coordinates)
+        return 'Vector{}'.format(self.coordinates)
 
 
     def __eq__(self, v):
@@ -38,7 +38,7 @@ class Vector:
     def scalar_mul(self, v):
         return Vector([v * c for c in self])
 
-    def get_magnitude(self):
+    def get_magnitude(self) -> float:
         return math.sqrt(sum([math.pow(a, 2) for a in self.coordinates]))
 
     def get_normalization(self):
@@ -53,7 +53,12 @@ class Vector:
         mag1, mag2 = self.get_magnitude(), v.get_magnitude()
         #if dot_product * mag1 * mag2 == 0:
         #    return 0
-        return math.acos(dot_product/(mag1*mag2))
+
+        #! I had a bug here because the dot product/magnitudes
+        #! were returning 1.0000000000000002 instead of 1.0
+        #! so I had to round them to 1.00 (2 decimal places)
+        #! to get the correct answer
+        return math.acos(round(dot_product / (mag1 * mag2), 2))
     
     def get_angle_deg(self, v):
         rad = self.get_angle_rad(v)
@@ -74,3 +79,17 @@ class Vector:
             return dot_product == 0 or deg == 90 or deg == 270
         except ZeroDivisionError:
             return True
+    
+    def get_projection(self, b):
+        normb = b.get_normalization()
+        magvll = self.dot_product(normb)
+        vll = Vector(normb.scalar_mul(magvll))
+        assert vll.is_parallel(b), "vll is not parallel to b"
+        return vll
+
+    def get_orthogonal(self, v):
+        proj = self.get_projection(v)
+        orth = self - proj
+        assert orth.is_orthogonal(v), "orth is not orthogonal to v"
+        return orth
+        
